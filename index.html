@@ -3,234 +3,288 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SoF Scholar Family Tree — Animated</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>scholar of finance — family tree</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --navy:#0D1F3C;--navy2:#1B3A6B;--navy3:#2B5499;
-  --navy4:#3A6EBF;--navy5:#6B9ACC;
-  --g1:#1B3A6B;--g2:#2B5499;--g3:#3A6EBF;--g4:#6B9ACC;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #0D1F3C;
+  --navy2: #1B3A6B;
+  --navy3: #2B5499;
+  --navy4: #3A6EBF;
+  --navy5: #6B9ACC;
+  --ink: #1a1a1a;
+  --muted: #999;
+  --border: #e8e8e8;
+  --white: #ffffff;
 }
-html,body{height:100%;background:var(--navy);color:#fff;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+html, body { height: 100%; background: var(--white); color: var(--ink); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
 
-/* INTRO OVERLAY */
-#intro{
-  position:fixed;inset:0;background:var(--navy);z-index:999;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-  transition:opacity 0.8s ease;
+/* ─── INTRO ─── */
+#intro {
+  position: fixed; inset: 0; background: var(--white);
+  z-index: 999; display: flex; align-items: center; justify-content: center;
+  transition: opacity 1s ease;
 }
-#intro.fade{opacity:0;pointer-events:none}
-.intro-logo{
-  width:70px;height:70px;background:var(--navy2);border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;
-  border:2px solid rgba(255,255,255,0.15);
-  animation:pulse 2s ease infinite;
+#intro.fade { opacity: 0; pointer-events: none; }
+
+.intro-inner { text-align: center; }
+
+.typed-line {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+  min-height: 1.4em;
+  display: flex; align-items: center; justify-content: center;
 }
-.intro-title{font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;text-align:center}
-.intro-sub{color:rgba(255,255,255,0.4);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.18em}
-.intro-btn{
-  margin-top:12px;padding:12px 36px;border-radius:30px;
-  background:var(--navy3);border:none;color:#fff;
-  font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:500;
-  cursor:pointer;transition:all 0.2s;letter-spacing:0.03em;
+.cursor {
+  display: inline-block;
+  width: 1px; height: 1em;
+  background: var(--ink);
+  margin-left: 2px;
+  animation: blink 0.8s step-end infinite;
+  vertical-align: middle;
 }
-.intro-btn:hover{background:var(--navy4);transform:translateY(-2px);box-shadow:0 8px 24px rgba(43,84,153,0.5)}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(43,84,153,0.4)}50%{box-shadow:0 0 0 12px rgba(43,84,153,0)}}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* HEADER */
-header{
-  text-align:center;padding:30px 20px 20px;
-  background:linear-gradient(180deg,#060f1e 0%,var(--navy) 100%);
-  border-bottom:1px solid rgba(255,255,255,0.07);
-  opacity:0;transition:opacity 0.6s ease 0.2s;
+/* ─── MAIN ─── */
+#main { opacity: 0; transition: opacity 0.8s ease; }
+#main.show { opacity: 1; }
+
+/* ─── NAV ─── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28px 48px 24px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(8px);
 }
-header.show{opacity:1}
-.sof-logo{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:44px;height:44px;background:var(--navy2);border-radius:9px;
-  font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:900;
-  margin-bottom:10px;border:1.5px solid rgba(255,255,255,0.15);
+.nav-logo {
+  font-size: 0.88rem; font-weight: 400; color: var(--ink);
+  letter-spacing: 0.01em;
 }
-header h1{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3.5vw,2.2rem);font-weight:900}
-header p{color:rgba(255,255,255,0.38);font-size:0.78rem;margin-top:4px;text-transform:uppercase;letter-spacing:0.14em}
-
-/* CONTROLS */
-.controls{
-  display:flex;flex-wrap:wrap;gap:8px;padding:12px 22px;
-  background:rgba(255,255,255,0.03);border-bottom:1px solid rgba(255,255,255,0.06);
-  align-items:center;justify-content:space-between;
-  position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);
-  opacity:0;transition:opacity 0.5s ease 0.4s;
+.nav-logo span { color: var(--navy3); }
+.nav-right {
+  display: flex; align-items: center; gap: 24px;
 }
-.controls.show{opacity:1}
-.filter-group{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.fl{font-size:0.67rem;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.28);margin-right:2px}
-.fb{padding:5px 12px;border-radius:20px;border:1px solid rgba(255,255,255,0.14);background:transparent;font-family:'DM Sans',sans-serif;font-size:0.78rem;cursor:pointer;transition:all 0.18s;color:rgba(255,255,255,0.55)}
-.fb:hover{border-color:var(--navy4);color:#fff;background:rgba(58,110,191,0.15)}
-.fb.active{background:var(--navy3);color:#fff;border-color:var(--navy3)}
-.sw{position:relative}
-.sw input{padding:6px 12px 6px 30px;border-radius:20px;border:1px solid rgba(255,255,255,0.13);font-family:'DM Sans',sans-serif;font-size:0.83rem;outline:none;width:190px;transition:all 0.2s;background:rgba(255,255,255,0.05);color:#fff}
-.sw input::placeholder{color:rgba(255,255,255,0.26)}
-.sw input:focus{border-color:var(--navy4);background:rgba(255,255,255,0.08)}
-.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.26);font-size:0.85rem;pointer-events:none}
-
-/* REPLAY BTN */
-.replay-btn{
-  padding:5px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.2);
-  background:transparent;font-family:'DM Sans',sans-serif;font-size:0.78rem;
-  cursor:pointer;color:rgba(255,255,255,0.6);transition:all 0.18s;
+.nav-search {
+  position: relative;
 }
-.replay-btn:hover{border-color:var(--navy5);color:#fff;background:rgba(107,154,204,0.15)}
-
-/* STATS */
-.stats-bar{display:flex;background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.05);opacity:0;transition:opacity 0.5s ease 0.5s}
-.stats-bar.show{opacity:1}
-.si2{flex:1;padding:11px 8px;text-align:center;border-right:1px solid rgba(255,255,255,0.05)}
-.si2:last-child{border-right:none}
-.sn{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700}
-.sl{font-size:0.63rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.3);margin-top:1px}
-
-/* TREE */
-#treeContainer{overflow:auto;padding:44px 44px 90px;min-height:calc(100vh - 185px);cursor:grab}
-#treeContainer:active{cursor:grabbing}
-#treeInner{position:relative;display:inline-block;min-width:100%}
-svg#lsvg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:visible}
-
-/* ROWS */
-.founder-row{display:flex;align-items:flex-start;margin-bottom:52px;position:relative}
-
-/* FOUNDER */
-.founder-node{display:flex;flex-direction:column;align-items:center;cursor:pointer;flex-shrink:0;width:126px}
-.founder-card{
-  background:linear-gradient(135deg,#1B3A6B,#0D2550);
-  border:1.5px solid rgba(255,255,255,0.16);border-radius:15px;
-  padding:13px 11px;text-align:center;transition:all 0.22s;width:100%;
-  opacity:0;transform:scale(0.85);
+.nav-search input {
+  font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 300;
+  color: var(--ink); background: none; border: none; border-bottom: 1px solid var(--border);
+  padding: 4px 0 4px 0; outline: none; width: 160px;
+  transition: border-color 0.2s;
 }
-.founder-card.pop{opacity:1;transform:scale(1)}
-.founder-card:hover{transform:scale(1.04) translateY(-2px);box-shadow:0 10px 30px rgba(0,0,0,0.5)}
-.f-av{width:44px;height:44px;border-radius:50%;background:var(--navy3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:0.95rem;color:#fff;margin:0 auto 7px;border:2px solid rgba(255,255,255,0.22)}
-.f-name{font-family:'Playfair Display',serif;font-size:0.82rem;font-weight:700;line-height:1.25}
-.f-lbl{font-size:0.6rem;color:rgba(255,255,255,0.38);text-transform:uppercase;letter-spacing:0.07em;margin-top:3px}
-
-/* GENS */
-.gens-wrap{display:flex;gap:18px;margin-left:28px;align-items:flex-start}
-.gen-col{display:flex;flex-direction:column;align-items:center;gap:8px}
-.gen-pill{font-size:0.62rem;font-weight:600;text-transform:uppercase;letter-spacing:0.09em;padding:3px 9px;border-radius:9px;border:1px solid;white-space:nowrap;margin-bottom:3px;opacity:0;transition:opacity 0.4s}
-.gen-pill.show{opacity:1}
-.gp1{background:rgba(27,58,107,0.4);border-color:#1B3A6B;color:#8fb8d8}
-.gp2{background:rgba(43,84,153,0.4);border-color:#2B5499;color:#9dc0e0}
-.gp3{background:rgba(58,110,191,0.4);border-color:#3A6EBF;color:#b0ccec}
-.gp4{background:rgba(107,154,204,0.3);border-color:#6B9ACC;color:#c4daf0}
-
-/* SCHOLAR */
-.scholar-node{cursor:pointer;display:flex;flex-direction:column;align-items:center;transition:opacity 0.2s}
-.scholar-card{
-  border-radius:11px;padding:7px 10px;text-align:center;
-  border:1.5px solid transparent;transition:all 0.2s;
-  min-width:98px;max-width:112px;
-  opacity:0;transform:translateX(-8px);
+.nav-search input::placeholder { color: var(--muted); }
+.nav-search input:focus { border-color: var(--navy3); }
+.gen-filters { display: flex; gap: 16px; }
+.gf {
+  font-size: 0.75rem; font-weight: 300; color: var(--muted);
+  cursor: pointer; background: none; border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.15s; padding: 0;
+  letter-spacing: 0.02em;
 }
-.scholar-card.pop{opacity:1;transform:translateX(0)}
-.scholar-card:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 8px 22px rgba(0,0,0,0.45)}
-.s-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:0.7rem;color:#fff;margin:0 auto 5px;border:1.5px solid rgba(255,255,255,0.18)}
-.s-name{font-size:0.7rem;font-weight:500;color:rgba(255,255,255,0.88);line-height:1.3;word-break:break-word}
-.s-yr{font-size:0.58rem;color:rgba(255,255,255,0.36);margin-top:2px}
-.g1 .scholar-card{background:rgba(27,58,107,0.72);border-color:rgba(43,84,153,0.38)}
-.g2 .scholar-card{background:rgba(43,84,153,0.62);border-color:rgba(58,110,191,0.4)}
-.g3 .scholar-card{background:rgba(58,110,191,0.52);border-color:rgba(107,154,204,0.4)}
-.g4 .scholar-card{background:rgba(107,154,204,0.28);border-color:rgba(160,196,230,0.32)}
-.scholar-node.dimmed{opacity:0.13;pointer-events:none}
-.scholar-node.lit .scholar-card{border-color:#FFD700!important;box-shadow:0 0 12px rgba(255,215,0,0.28)!important}
+.gf:hover { color: var(--ink); }
+.gf.active { color: var(--navy); font-weight: 500; }
+.replay {
+  font-size: 0.75rem; font-weight: 300; color: var(--muted);
+  cursor: pointer; background: none; border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: color 0.15s;
+}
+.replay:hover { color: var(--ink); }
 
-/* SVG LINES */
-.tree-line{fill:none;stroke-width:1.4;opacity:0.38}
-.tl0{stroke:#4A7AC4}.tl1{stroke:#2B5499}.tl2{stroke:#3A6EBF}.tl3{stroke:#6B9ACC}
-/* stroke-dasharray animation applied via JS */
+/* ─── STATS ROW ─── */
+.stats {
+  display: flex; gap: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+}
+.stat {
+  padding: 14px 32px 14px 0; margin-right: 32px;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-n { font-size: 1.3rem; font-weight: 300; color: var(--navy); }
+.stat-l { font-size: 0.68rem; color: var(--muted); margin-top: 1px; letter-spacing: 0.06em; text-transform: lowercase; }
 
-/* MODAL */
-.mo{position:fixed;inset:0;background:rgba(6,15,30,0.8);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:20px}
-.mo.open{display:flex}
-.md{background:#0f2040;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:32px;max-width:390px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,0.65);animation:popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);position:relative}
-.mc{position:absolute;top:13px;right:15px;background:rgba(255,255,255,0.07);border:none;width:27px;height:27px;border-radius:50%;font-size:0.9rem;cursor:pointer;color:rgba(255,255,255,0.44);display:flex;align-items:center;justify-content:center;transition:all 0.15s}
-.mc:hover{background:rgba(255,255,255,0.14);color:#fff}
-.mav{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-weight:700;font-size:1.4rem;color:#fff;margin-bottom:11px;border:2.5px solid rgba(255,255,255,0.18)}
-.mn{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:4px}
-.mb{display:inline-block;padding:3px 11px;border-radius:11px;font-size:0.72rem;font-weight:500;margin-bottom:16px;border:1px solid}
-.mdiv{border:none;border-top:1px solid rgba(255,255,255,0.08);margin:13px 0}
-.mr{display:flex;gap:9px;margin-bottom:8px}
-.mrl{font-size:0.68rem;text-transform:uppercase;letter-spacing:0.07em;color:rgba(255,255,255,0.3);min-width:74px;padding-top:1px}
-.mrv{font-size:0.88rem;font-weight:500;color:rgba(255,255,255,0.8)}
+/* ─── TREE ─── */
+#treeWrap {
+  overflow: auto; padding: 52px 48px 100px;
+  cursor: default;
+}
+#treeInner { position: relative; display: inline-block; min-width: 100%; }
+svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:visible; }
 
-.no-res{display:none;text-align:center;padding:70px 20px;color:rgba(255,255,255,0.2)}
-.no-res.show{display:block}
+/* ─── FOUNDER ROW ─── */
+.founder-row {
+  display: flex; align-items: flex-start;
+  margin-bottom: 56px; gap: 0;
+}
 
-@keyframes popIn{from{opacity:0;transform:scale(0.88)}to{opacity:1;transform:scale(1)}}
-#treeContainer::-webkit-scrollbar{width:5px;height:5px}
-#treeContainer::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+/* ─── FOUNDER NODE ─── */
+.founder-node {
+  flex-shrink: 0; width: 140px;
+  cursor: pointer;
+}
+.founder-card {
+  padding: 0; opacity: 0; transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.founder-card.pop { opacity: 1; transform: translateY(0); }
+.f-name {
+  font-size: 0.88rem; font-weight: 500; color: var(--navy);
+  line-height: 1.3;
+}
+.f-label {
+  font-size: 0.68rem; color: var(--muted); margin-top: 3px;
+  font-weight: 300; letter-spacing: 0.05em;
+}
+.f-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--navy); display: inline-block;
+  margin-right: 6px; vertical-align: middle; margin-bottom: 1px;
+}
+
+/* ─── GEN COLS ─── */
+.gens-wrap { display: flex; gap: 28px; margin-left: 36px; align-items: flex-start; }
+.gen-col { display: flex; flex-direction: column; gap: 7px; }
+.gen-col[data-gen] { transition: opacity 0.2s; }
+
+.gen-header {
+  font-size: 0.62rem; color: var(--muted); font-weight: 400;
+  letter-spacing: 0.1em; text-transform: lowercase; margin-bottom: 4px;
+  opacity: 0; transition: opacity 0.4s ease;
+  font-family: 'DM Mono', monospace;
+}
+.gen-header.show { opacity: 1; }
+
+/* ─── SCHOLAR ─── */
+.scholar-node { cursor: pointer; }
+.scholar-card {
+  padding: 5px 0;
+  opacity: 0; transform: translateX(-5px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  border-bottom: 1px solid transparent;
+}
+.scholar-card.pop { opacity: 1; transform: translateX(0); }
+.scholar-card:hover { border-bottom-color: var(--navy3); }
+.s-name {
+  font-size: 0.78rem; font-weight: 300; color: var(--ink);
+  line-height: 1.4; white-space: nowrap;
+}
+.s-year {
+  font-size: 0.6rem; color: var(--muted); margin-top: 1px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* gen color dots on names */
+.s-dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  display: inline-block; margin-right: 5px;
+  vertical-align: middle; margin-bottom: 1px;
+}
+
+.scholar-node.dimmed .scholar-card { opacity: 0.12; pointer-events: none; }
+.scholar-node.lit .s-name { color: var(--navy); font-weight: 500; }
+
+/* ─── SVG LINES ─── */
+.tline { fill: none; stroke-width: 1; }
+.tl0 { stroke: var(--navy); opacity: 0.15; }
+.tl1 { stroke: var(--navy2); opacity: 0.15; }
+.tl2 { stroke: var(--navy3); opacity: 0.15; }
+.tl3 { stroke: var(--navy4); opacity: 0.13; }
+
+/* ─── MODAL ─── */
+.mo { position:fixed;inset:0;background:rgba(255,255,255,0.88);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:20px; }
+.mo.open { display:flex; }
+.md {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 2px; padding: 40px; max-width: 360px; width: 100%;
+  box-shadow: 0 2px 40px rgba(0,0,0,0.07);
+  animation: fadeUp 0.25s ease;
+  position: relative;
+}
+.mc { position:absolute;top:16px;right:18px;background:none;border:none;font-size:1rem;cursor:pointer;color:var(--muted); transition:color 0.15s; }
+.mc:hover { color:var(--ink); }
+.m-name { font-size: 1.2rem; font-weight: 400; color: var(--navy); margin-bottom: 4px; }
+.m-badge { font-size: 0.68rem; color: var(--muted); font-family:'DM Mono',monospace; margin-bottom: 24px; display:block; }
+.m-divider { border:none;border-top:1px solid var(--border);margin:16px 0; }
+.m-row { display:flex;gap:16px;margin-bottom:8px;align-items:baseline; }
+.m-lbl { font-size:0.68rem;color:var(--muted);min-width:72px;letter-spacing:0.05em;text-transform:lowercase; }
+.m-val { font-size:0.85rem;font-weight:300;color:var(--ink); }
+
+.no-res { display:none;text-align:center;padding:80px 20px;color:var(--muted);font-size:0.85rem;font-weight:300; }
+.no-res.show { display:block; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+#treeWrap::-webkit-scrollbar{width:4px;height:4px}
+#treeWrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
 </style>
 </head>
 <body>
 
-<!-- INTRO -->
+<!-- ── INTRO ── -->
 <div id="intro">
-  <div class="intro-logo">SoF</div>
-  <div class="intro-title">Scholar of Finance</div>
-  <div class="intro-sub">Family Tree — All Generations</div>
-  <button class="intro-btn" id="startBtn">▶ &nbsp;Reveal the Tree</button>
-</div>
-
-<header id="header">
-  <div class="sof-logo">SoF</div>
-  <h1>Scholar of Finance</h1>
-  <p>Family Tree · All Generations</p>
-</header>
-
-<div class="controls" id="controls">
-  <div class="filter-group">
-    <span class="fl">Generation</span>
-    <button class="fb active" data-gen="all">All</button>
-    <button class="fb" data-gen="1">Gen 1 '26</button>
-    <button class="fb" data-gen="2">Gen 2 '27</button>
-    <button class="fb" data-gen="3">Gen 3 '28</button>
-    <button class="fb" data-gen="4">Gen 4 '29</button>
-    <button class="replay-btn" id="replayBtn">↺ Replay</button>
-  </div>
-  <div class="sw">
-    <span class="si">🔍</span>
-    <input type="text" id="searchInput" placeholder="Search a scholar…" />
+  <div class="intro-inner">
+    <div class="typed-line">
+      <span id="typedText"></span><span class="cursor" id="cur"></span>
+    </div>
   </div>
 </div>
 
-<div class="stats-bar" id="statsBar">
-  <div class="si2"><div class="sn">5</div><div class="sl">Founders</div></div>
-  <div class="si2"><div class="sn" id="s-total">0</div><div class="sl">Scholars</div></div>
-  <div class="si2"><div class="sn" id="s-g1">0</div><div class="sl">Gen 1 '26</div></div>
-  <div class="si2"><div class="sn" id="s-g2">0</div><div class="sl">Gen 2 '27</div></div>
-  <div class="si2"><div class="sn" id="s-g3">0</div><div class="sl">Gen 3 '28</div></div>
-  <div class="si2"><div class="sn" id="s-g4">0</div><div class="sl">Gen 4 '29</div></div>
-</div>
+<!-- ── MAIN ── -->
+<div id="main">
+  <nav>
+    <div class="nav-logo">scholar of finance <span>/ family tree</span></div>
+    <div class="nav-right">
+      <div class="gen-filters">
+        <button class="gf active" data-gen="all">all</button>
+        <button class="gf" data-gen="1">gen 1</button>
+        <button class="gf" data-gen="2">gen 2</button>
+        <button class="gf" data-gen="3">gen 3</button>
+        <button class="gf" data-gen="4">gen 4</button>
+      </div>
+      <div class="nav-search">
+        <input type="text" id="searchInput" placeholder="search a scholar" />
+      </div>
+      <button class="replay" id="replayBtn">↺ replay</button>
+    </div>
+  </nav>
 
-<div id="treeContainer">
-  <div id="treeInner">
-    <svg id="lsvg"></svg>
-    <div id="treeRows"></div>
+  <div class="stats">
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">founders</div></div>
+    <div class="stat"><div class="stat-n" id="s-total">0</div><div class="stat-l">scholars</div></div>
+    <div class="stat"><div class="stat-n" id="s-g1">0</div><div class="stat-l">gen 1 '26</div></div>
+    <div class="stat"><div class="stat-n" id="s-g2">0</div><div class="stat-l">gen 2 '27</div></div>
+    <div class="stat"><div class="stat-n" id="s-g3">0</div><div class="stat-l">gen 3 '28</div></div>
+    <div class="stat"><div class="stat-n" id="s-g4">0</div><div class="stat-l">gen 4 '29</div></div>
   </div>
-</div>
-<div class="no-res" id="noRes"><div style="font-size:1.8rem;margin-bottom:8px">🔍</div>No scholars found.</div>
 
+  <div id="treeWrap">
+    <div id="treeInner">
+      <svg id="lsvg"></svg>
+      <div id="treeRows"></div>
+    </div>
+  </div>
+  <div class="no-res" id="noRes">no scholars found.</div>
+</div>
+
+<!-- ── MODAL ── -->
 <div class="mo" id="mo">
   <div class="md">
     <button class="mc" id="mc">✕</button>
-    <div class="mav" id="mav"></div>
-    <div class="mn" id="mn"></div>
-    <span class="mb" id="mb"></span>
-    <hr class="mdiv">
-    <div class="mr"><div class="mrl">Founder</div><div class="mrv" id="mf"></div></div>
-    <div class="mr"><div class="mrl">Generation</div><div class="mrv" id="mg"></div></div>
-    <div class="mr"><div class="mrl">Class Year</div><div class="mrv" id="my"></div></div>
+    <div class="m-name" id="mn"></div>
+    <span class="m-badge" id="mb"></span>
+    <hr class="m-divider">
+    <div class="m-row"><div class="m-lbl">founder</div><div class="m-val" id="mf"></div></div>
+    <div class="m-row"><div class="m-lbl">generation</div><div class="m-val" id="mg"></div></div>
+    <div class="m-row"><div class="m-lbl">class year</div><div class="m-val" id="my"></div></div>
   </div>
 </div>
 
@@ -243,38 +297,102 @@ const DATA=[
   {founder:"Muzammil Jawed",gen1:["Enzo Valadares","Sabato Corbisiero","Sofia Smith"],gen2:["Annika Flink","Dylan Alini","Grace Mawicke","John Manning","Kara Grossman","Nathan Balderas","Samuel Wertheim","Zaid Salaria"],gen3:["Azar Afellah","Christopher Chau","Grace Raney","Poshitha Upparapalli","Shirina Rong"],gen4:["Ario Merrill","Charles DeLange","Demetri Condolios","Grace Kirby","Jack Webb","Jonathan Wiggins","Josh Binder","Larah Flavier","Lucas Scourtos","Mia Chen","Natalie Percello","Simone Alexander","Sophia Disla","William Cavalier"]}
 ];
 
-const GC=["#1B3A6B","#2B5499","#3A6EBF","#6B9ACC"];
-const GL=["Gen 1 '26","Gen 2 '27","Gen 3 '28","Gen 4 '29"];
+const GC=["#0D1F3C","#1B3A6B","#2B5499","#3A6EBF"];
+const GL=["gen 1 '26","gen 2 '27","gen 3 '28","gen 4 '29"];
 const GK=["gen1","gen2","gen3","gen4"];
-const GP=["gp1","gp2","gp3","gp4"];
-const GG=["g1","g2","g3","g4"];
 let activeGen="all", searchVal="";
 
 function ini(n){return n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();}
 
+// ── TYPING INTRO ──
+const phrases = [
+  "scholars of finance.",
+  "to inspire character and integrity in the finance leaders of tomorrow.",
+  "five founders. four generations.",
+  "scholars of finance — family tree."
+];
+
+function typeSequence(callback) {
+  const el = document.getElementById("typedText");
+  const cur = document.getElementById("cur");
+  let pi = 0;
+
+  function typePhrase(phrase, done) {
+    let i = 0;
+    el.textContent = "";
+    function typeChar() {
+      if (i < phrase.length) {
+        el.textContent += phrase[i++];
+        setTimeout(typeChar, 42);
+      } else {
+        setTimeout(done, pi < phrases.length - 1 ? 700 : 400);
+      }
+    }
+    typeChar();
+  }
+
+  function erasePhrase(done) {
+    let text = el.textContent;
+    function eraseChar() {
+      if (text.length > 0) {
+        text = text.slice(0, -1);
+        el.textContent = text;
+        setTimeout(eraseChar, 22);
+      } else { done(); }
+    }
+    eraseChar();
+  }
+
+  function next() {
+    if (pi < phrases.length) {
+      typePhrase(phrases[pi], () => {
+        pi++;
+        if (pi < phrases.length) erasePhrase(next);
+        else { setTimeout(() => { cur.style.display="none"; callback(); }, 600); }
+      });
+    }
+  }
+  next();
+}
+
 // ── BUILD DOM ──
-function buildTree(){
-  document.getElementById("treeRows").innerHTML="";
-  document.getElementById("lsvg").innerHTML="";
-  DATA.forEach((f,fi)=>{
-    const row=document.createElement("div");
-    row.className="founder-row";
-    const fn=document.createElement("div");
-    fn.className="founder-node"; fn.dataset.id=`f-${fi}`;
-    fn.innerHTML=`<div class="founder-card" id="fc-${fi}"><div class="f-av">${ini(f.founder)}</div><div class="f-name">${f.founder}</div><div class="f-lbl">Founder</div></div>`;
-    fn.querySelector(".founder-card").addEventListener("click",()=>openModal(f.founder,"—",0));
+function buildTree() {
+  document.getElementById("treeRows").innerHTML = "";
+  document.getElementById("lsvg").innerHTML = "";
+  DATA.forEach((f, fi) => {
+    const row = document.createElement("div");
+    row.className = "founder-row";
+    // founder
+    const fn = document.createElement("div");
+    fn.className = "founder-node";
+    fn.dataset.id = `f-${fi}`;
+    fn.innerHTML = `<div class="founder-card" id="fc-${fi}">
+      <div class="f-name"><span class="f-dot"></span>${f.founder}</div>
+      <div class="f-label">founder</div>
+    </div>`;
+    fn.querySelector(".founder-card").addEventListener("click", () => openModal(f.founder,"—",0));
     row.appendChild(fn);
-    const gw=document.createElement("div"); gw.className="gens-wrap";
-    GK.forEach((key,gi)=>{
-      const scholars=f[key]||[]; if(!scholars.length) return;
-      const col=document.createElement("div"); col.className="gen-col"; col.dataset.gen=String(gi+1);
-      const pill=document.createElement("div"); pill.className=`gen-pill ${GP[gi]}`; pill.textContent=GL[gi];
-      col.appendChild(pill);
-      scholars.forEach((name,ni)=>{
-        const sn=document.createElement("div");
-        sn.className=`scholar-node ${GG[gi]}`; sn.dataset.name=name.toLowerCase(); sn.dataset.gen=String(gi+1); sn.dataset.id=`s-${fi}-${gi}-${ni}`;
-        sn.innerHTML=`<div class="scholar-card" id="sc-${fi}-${gi}-${ni}"><div class="s-av" style="background:${GC[gi]}">${ini(name)}</div><div class="s-name">${name}</div><div class="s-yr">'${26+gi}</div></div>`;
-        sn.querySelector(".scholar-card").addEventListener("click",()=>openModal(name,f.founder,gi+1));
+
+    const gw = document.createElement("div");
+    gw.className = "gens-wrap";
+    GK.forEach((key, gi) => {
+      const scholars = f[key] || [];
+      if (!scholars.length) return;
+      const col = document.createElement("div");
+      col.className = "gen-col"; col.dataset.gen = String(gi+1);
+      const hdr = document.createElement("div");
+      hdr.className = "gen-header"; hdr.textContent = GL[gi];
+      col.appendChild(hdr);
+      scholars.forEach((name, ni) => {
+        const sn = document.createElement("div");
+        sn.className = "scholar-node";
+        sn.dataset.name = name.toLowerCase(); sn.dataset.gen = String(gi+1);
+        sn.dataset.id = `s-${fi}-${gi}-${ni}`;
+        sn.innerHTML = `<div class="scholar-card" id="sc-${fi}-${gi}-${ni}">
+          <div class="s-name"><span class="s-dot" style="background:${GC[gi]}"></span>${name}</div>
+          <div class="s-year">'${26+gi}</div>
+        </div>`;
+        sn.querySelector(".scholar-card").addEventListener("click", () => openModal(name, f.founder, gi+1));
         col.appendChild(sn);
       });
       gw.appendChild(col);
@@ -284,179 +402,166 @@ function buildTree(){
   });
 }
 
-// ── DRAW SVG LINES (with dash animation support) ──
-function drawLines(animate=false){
-  const svg=document.getElementById("lsvg");
-  const inner=document.getElementById("treeInner");
-  svg.innerHTML="";
-  const ir=inner.getBoundingClientRect();
-  const tc=document.getElementById("treeContainer");
-  const sl=tc.scrollLeft, st=tc.scrollTop;
-  let allPaths=[];
+// ── DRAW LINES ──
+function drawLines(animate=false) {
+  const svg = document.getElementById("lsvg");
+  const inner = document.getElementById("treeInner");
+  svg.innerHTML = "";
+  const ir = inner.getBoundingClientRect();
+  const tc = document.getElementById("treeWrap");
+  const sl = tc.scrollLeft, st = tc.scrollTop;
+  const paths = [];
 
-  DATA.forEach((f,fi)=>{
-    const fEl=document.querySelector(`[data-id="f-${fi}"]`);
-    if(!fEl) return;
-    const fc=fEl.querySelector(".founder-card").getBoundingClientRect();
-    const fx=fc.right-ir.left+sl, fy=fc.top+fc.height/2-ir.top+st;
-    GK.forEach((key,gi)=>{
-      const scholars=f[key]||[]; if(!scholars.length) return;
-      scholars.forEach((_,ni)=>{
-        const sEl=document.querySelector(`[data-id="s-${fi}-${gi}-${ni}"]`);
-        if(!sEl||sEl.classList.contains("dimmed")) return;
-        const sc=sEl.querySelector(".scholar-card").getBoundingClientRect();
-        const sx=sc.left-ir.left+sl, sy=sc.top+sc.height/2-ir.top+st;
-        const mx=(fx+sx)/2;
-        const path=document.createElementNS("http://www.w3.org/2000/svg","path");
-        const d=`M ${fx} ${fy} C ${mx} ${fy}, ${mx} ${sy}, ${sx} ${sy}`;
-        path.setAttribute("d",d);
-        path.setAttribute("class",`tree-line tl${gi}`);
-        if(animate){
-          const len=path.getTotalLength ? (() => { svg.appendChild(path); return path.getTotalLength(); })() : 200;
-          if(!path.isConnected) svg.appendChild(path);
-          path.style.strokeDasharray=len;
-          path.style.strokeDashoffset=len;
-          path.style.transition="none";
-          allPaths.push({path, len, fi, gi, ni});
-        } else {
-          svg.appendChild(path);
+  DATA.forEach((f, fi) => {
+    const fEl = document.querySelector(`[data-id="f-${fi}"]`);
+    if (!fEl) return;
+    const fc = fEl.querySelector(".founder-card").getBoundingClientRect();
+    const fx = fc.right - ir.left + sl;
+    const fy = fc.top + fc.height/2 - ir.top + st;
+
+    GK.forEach((key, gi) => {
+      const scholars = f[key] || [];
+      scholars.forEach((_, ni) => {
+        const sEl = document.querySelector(`[data-id="s-${fi}-${gi}-${ni}"]`);
+        if (!sEl || sEl.classList.contains("dimmed")) return;
+        const sc = sEl.querySelector(".scholar-card").getBoundingClientRect();
+        const sx = sc.left - ir.left + sl;
+        const sy = sc.top + sc.height/2 - ir.top + st;
+        const mx = fx + (sx - fx) * 0.55;
+        const path = document.createElementNS("http://www.w3.org/2000/svg","path");
+        const d = `M ${fx} ${fy} C ${mx} ${fy}, ${mx} ${sy}, ${sx} ${sy}`;
+        path.setAttribute("d", d);
+        path.setAttribute("class", `tline tl${gi}`);
+        svg.appendChild(path);
+        if (animate) {
+          const len = path.getTotalLength();
+          path.style.strokeDasharray = len;
+          path.style.strokeDashoffset = len;
+          paths.push({ path, len });
         }
       });
     });
   });
-  return allPaths;
+  return paths;
 }
 
-// ── ANIMATE SEQUENCE ──
-function runAnimation(){
-  buildTree();
-  setTimeout(()=>{
-    // Show header + controls
-    document.getElementById("header").classList.add("show");
-    document.getElementById("controls").classList.add("show");
-    document.getElementById("statsBar").classList.add("show");
-  }, 100);
-
-  // Pop in founders one by one
-  DATA.forEach((f,fi)=>{
-    setTimeout(()=>{
-      const fc=document.getElementById(`fc-${fi}`);
-      if(fc) fc.classList.add("pop");
-    }, 300 + fi*180);
+// ── ANIMATE TREE ──
+function animateTree() {
+  // founders pop in
+  DATA.forEach((_, fi) => {
+    setTimeout(() => {
+      const fc = document.getElementById(`fc-${fi}`);
+      if (fc) fc.classList.add("pop");
+    }, fi * 160);
   });
 
-  // After founders done, show pills
-  const foundersDone = 300 + DATA.length*180 + 100;
-  document.querySelectorAll(".gen-pill").forEach((pill,i)=>{
-    setTimeout(()=>pill.classList.add("show"), foundersDone + i*30);
+  const fDone = DATA.length * 160 + 120;
+
+  // gen headers
+  document.querySelectorAll(".gen-header").forEach((h, i) => {
+    setTimeout(() => h.classList.add("show"), fDone + i * 25);
   });
 
-  // Pop in scholars staggered by gen
-  const scholarStart = foundersDone + 200;
-  let delay = 0;
-  GK.forEach((key,gi)=>{
-    DATA.forEach((f,fi)=>{
-      const scholars=f[key]||[];
-      scholars.forEach((_,ni)=>{
-        setTimeout(()=>{
-          const sc=document.getElementById(`sc-${fi}-${gi}-${ni}`);
-          if(sc) sc.classList.add("pop");
-        }, scholarStart + gi*120 + fi*30 + ni*25 + delay);
+  // scholars staggered by gen then founder
+  const sStart = fDone + 180;
+  let d = 0;
+  GK.forEach((key, gi) => {
+    DATA.forEach((f, fi) => {
+      (f[key]||[]).forEach((_, ni) => {
+        setTimeout(() => {
+          const sc = document.getElementById(`sc-${fi}-${gi}-${ni}`);
+          if (sc) sc.classList.add("pop");
+        }, sStart + gi*100 + fi*20 + ni*18 + d);
       });
     });
   });
 
-  // Draw lines after everything pops
-  const totalScholars = DATA.reduce((a,f)=>a+GK.reduce((b,k)=>b+(f[k]||[]).length,0),0);
-  const linesStart = scholarStart + 4*120 + totalScholars*10 + 200;
-  setTimeout(()=>{
-    const allPaths = drawLines(true);
-    // Animate each path with staggered transitions
-    allPaths.forEach(({path, len},i)=>{
-      setTimeout(()=>{
-        path.style.transition=`stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1)`;
-        path.style.strokeDashoffset="0";
-      }, i * 18);
+  const totalS = DATA.reduce((a,f)=>a+GK.reduce((b,k)=>b+(f[k]||[]).length,0),0);
+  const lStart = sStart + 4*100 + totalS*10 + 300;
+
+  // draw lines with dash animation
+  setTimeout(() => {
+    const paths = drawLines(true);
+    paths.forEach(({path, len}, i) => {
+      setTimeout(() => {
+        path.style.transition = `stroke-dashoffset 0.55s cubic-bezier(0.4,0,0.2,1)`;
+        path.style.strokeDashoffset = "0";
+      }, i * 14);
     });
-  }, linesStart);
+  }, lStart);
 }
 
 // ── FILTERS ──
-function applyFilters(){
-  const allS=document.querySelectorAll(".scholar-node");
-  let anyVis=false;
-  allS.forEach(n=>{
-    const gen=n.dataset.gen, name=n.dataset.name||"";
-    const gOk=activeGen==="all"||gen===activeGen;
-    const sOk=!searchVal||name.includes(searchVal);
-    const show=gOk&&sOk;
-    n.classList.toggle("dimmed",!show);
-    n.classList.toggle("lit",show&&!!searchVal&&sOk);
-    if(show) anyVis=true;
+function applyFilters() {
+  let anyVis = false;
+  document.querySelectorAll(".scholar-node").forEach(n => {
+    const gOk = activeGen==="all" || n.dataset.gen===activeGen;
+    const sOk = !searchVal || n.dataset.name.includes(searchVal);
+    const show = gOk && sOk;
+    n.classList.toggle("dimmed", !show);
+    n.classList.toggle("lit", show && !!searchVal && sOk);
+    if (show) anyVis = true;
   });
-  document.querySelectorAll(".gen-col").forEach(col=>{
-    col.style.opacity=(activeGen==="all"||col.dataset.gen===activeGen)?"1":"0.15";
+  document.querySelectorAll(".gen-col").forEach(col => {
+    col.style.opacity = (activeGen==="all" || col.dataset.gen===activeGen) ? "1" : "0.15";
   });
-  document.getElementById("noRes").classList.toggle("show",!anyVis&&(searchVal!==""||activeGen!=="all"));
-  requestAnimationFrame(()=>drawLines(false));
+  document.getElementById("noRes").classList.toggle("show", !anyVis && (searchVal||activeGen!=="all"));
+  requestAnimationFrame(() => drawLines(false));
 }
 
 // ── MODAL ──
-const BC=["#0D2550","#1B3A6B","#2B5499","#3A6EBF","#6B9ACC"];
-function openModal(name,founder,gi){
-  document.getElementById("mn").textContent=name;
-  document.getElementById("mf").textContent=gi===0?"—":founder;
-  document.getElementById("mg").textContent=gi===0?"Founder":GL[gi-1];
-  document.getElementById("my").textContent=gi===0?"—":`Class of '${25+gi}`;
-  const av=document.getElementById("mav"); av.textContent=ini(name); av.style.background=BC[gi];
-  const b=document.getElementById("mb"); b.textContent=gi===0?"Founder":GL[gi-1];
-  b.style.background=BC[gi]+"44"; b.style.borderColor=BC[gi]; b.style.color="#A8C0DC";
+function openModal(name, founder, gi) {
+  document.getElementById("mn").textContent = name;
+  document.getElementById("mf").textContent = gi===0 ? "—" : founder;
+  document.getElementById("mg").textContent = gi===0 ? "founder" : GL[gi-1];
+  document.getElementById("my").textContent = gi===0 ? "—" : `class of '${25+gi}`;
+  document.getElementById("mb").textContent = gi===0 ? "founder" : `${GL[gi-1]} · scholar of finance`;
   document.getElementById("mo").classList.add("open");
 }
-document.getElementById("mc").addEventListener("click",()=>document.getElementById("mo").classList.remove("open"));
-document.getElementById("mo").addEventListener("click",e=>{if(e.target===document.getElementById("mo"))document.getElementById("mo").classList.remove("open");});
+document.getElementById("mc").addEventListener("click", () => document.getElementById("mo").classList.remove("open"));
+document.getElementById("mo").addEventListener("click", e => { if(e.target===document.getElementById("mo")) document.getElementById("mo").classList.remove("open"); });
 
-// CONTROLS
-document.querySelectorAll(".fb").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".fb").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active"); activeGen=btn.dataset.gen; applyFilters();
+// ── CONTROLS ──
+document.querySelectorAll(".gf").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".gf").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active"); activeGen = btn.dataset.gen; applyFilters();
   });
 });
-document.getElementById("searchInput").addEventListener("input",e=>{searchVal=e.target.value.toLowerCase().trim();applyFilters();});
-document.getElementById("replayBtn").addEventListener("click",()=>{
-  // Reset all cards
-  document.querySelectorAll(".founder-card,.scholar-card").forEach(el=>{el.classList.remove("pop");});
-  document.querySelectorAll(".gen-pill").forEach(el=>el.classList.remove("show"));
-  document.getElementById("lsvg").innerHTML="";
-  setTimeout(runAnimation, 100);
+document.getElementById("searchInput").addEventListener("input", e => {
+  searchVal = e.target.value.toLowerCase().trim(); applyFilters();
+});
+document.getElementById("replayBtn").addEventListener("click", () => {
+  document.querySelectorAll(".founder-card, .scholar-card").forEach(el => el.classList.remove("pop"));
+  document.querySelectorAll(".gen-header").forEach(el => el.classList.remove("show"));
+  document.getElementById("lsvg").innerHTML = "";
+  setTimeout(animateTree, 80);
 });
 
-// START BTN
-document.getElementById("startBtn").addEventListener("click",()=>{
-  document.getElementById("intro").classList.add("fade");
-  setTimeout(()=>{document.getElementById("intro").style.display="none";},800);
-  runAnimation();
-});
-
-// STATS
-function calcStats(){
+// ── STATS ──
+function calcStats() {
   let g=[0,0,0,0];
-  DATA.forEach(f=>GK.forEach((k,i)=>g[i]+=(f[k]||[]).length));
-  document.getElementById("s-total").textContent=g.reduce((a,b)=>a+b,0);
-  ["s-g1","s-g2","s-g3","s-g4"].forEach((id,i)=>document.getElementById(id).textContent=g[i]);
+  DATA.forEach(f => GK.forEach((k,i) => g[i]+=(f[k]||[]).length));
+  document.getElementById("s-total").textContent = g.reduce((a,b)=>a+b,0);
+  ["s-g1","s-g2","s-g3","s-g4"].forEach((id,i) => document.getElementById(id).textContent = g[i]);
 }
 
-// DRAG
-const tc=document.getElementById("treeContainer");
-let drag=false,sx,sy,scx,scy;
-tc.addEventListener("mousedown",e=>{drag=true;sx=e.pageX-tc.offsetLeft;sy=e.pageY-tc.offsetTop;scx=tc.scrollLeft;scy=tc.scrollTop;});
-tc.addEventListener("mousemove",e=>{if(!drag)return;e.preventDefault();tc.scrollLeft=scx-(e.pageX-tc.offsetLeft-sx);tc.scrollTop=scy-(e.pageY-tc.offsetTop-sy);});
-["mouseup","mouseleave"].forEach(ev=>tc.addEventListener(ev,()=>drag=false));
-window.addEventListener("resize",()=>requestAnimationFrame(()=>drawLines(false)));
-tc.addEventListener("scroll",()=>requestAnimationFrame(()=>drawLines(false)));
+// scroll redraws lines
+const tw = document.getElementById("treeWrap");
+tw.addEventListener("scroll", () => requestAnimationFrame(() => drawLines(false)));
+window.addEventListener("resize", () => requestAnimationFrame(() => drawLines(false)));
 
+// ── LAUNCH ──
 calcStats();
+buildTree();
+typeSequence(() => {
+  document.getElementById("intro").classList.add("fade");
+  setTimeout(() => {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("main").classList.add("show");
+    animateTree();
+  }, 900);
+});
 </script>
 </body>
 </html>
