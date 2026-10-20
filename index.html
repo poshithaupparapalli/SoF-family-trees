@@ -217,9 +217,9 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
 .album-col { flex: 1; min-width: 0; }
 .album-track {
   display: flex; flex-direction: column; gap: 10px;
-  animation: albumUp 60s linear infinite;
+  animation: albumUp 28s linear infinite;
 }
-.album-col:nth-child(2) .album-track { animation-name: albumDown; animation-duration: 75s; }
+.album-col:nth-child(2) .album-track { animation-name: albumDown; animation-duration: 36s; }
 #album:hover .album-track { animation-play-state: paused; }
 @keyframes albumUp { from { transform: translateY(0); } to { transform: translateY(calc(-50% - 5px)); } }
 @keyframes albumDown { from { transform: translateY(calc(-50% - 5px)); } to { transform: translateY(0); } }
@@ -601,7 +601,24 @@ const PHOTOS = [
   "photos/sof-08.jpg",
   "photos/sof-09.jpg",
   "photos/sof-10.jpg",
-  "photos/sof-11.jpg"
+  "photos/sof-11.jpg",
+  "photos/sof-12.jpg",
+  "photos/sof-13.jpg",
+  "photos/sof-14.jpg",
+  "photos/sof-15.jpg",
+  "photos/sof-16.jpg",
+  "photos/sof-17.jpg",
+  "photos/sof-18.jpg",
+  "photos/sof-19.jpg",
+  "photos/sof-20.jpg",
+  "photos/sof-21.jpg",
+  "photos/sof-22.jpg",
+  "photos/sof-23.jpg",
+  "photos/sof-24.jpg",
+  "photos/sof-25.jpg",
+  "photos/sof-26.jpg",
+  "photos/sof-27.jpg",
+  "photos/sof-28.jpg"
 ];
 
 function buildAlbum() {
