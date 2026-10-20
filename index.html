@@ -199,6 +199,7 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
 .tl1 { stroke: var(--navy2); opacity: 0.15; }
 .tl2 { stroke: var(--navy3); opacity: 0.15; }
 .tl3 { stroke: var(--navy4); opacity: 0.13; }
+.tl4 { stroke: var(--navy5); opacity: 0.13; }
 
 /* ─── MODAL ─── */
 .mo { position:fixed;inset:0;background:rgba(255,255,255,0.88);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:20px; }
@@ -249,6 +250,7 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
         <button class="gf" data-gen="2">gen 2</button>
         <button class="gf" data-gen="3">gen 3</button>
         <button class="gf" data-gen="4">gen 4</button>
+        <button class="gf" data-gen="5">gen 5</button>
       </div>
       <div class="nav-search">
         <input type="text" id="searchInput" placeholder="search a scholar" />
@@ -264,6 +266,7 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
     <div class="stat"><div class="stat-n" id="s-g2">0</div><div class="stat-l">gen 2 '27</div></div>
     <div class="stat"><div class="stat-n" id="s-g3">0</div><div class="stat-l">gen 3 '28</div></div>
     <div class="stat"><div class="stat-n" id="s-g4">0</div><div class="stat-l">gen 4 '29</div></div>
+    <div class="stat"><div class="stat-n" id="s-g5">0</div><div class="stat-l">gen 5 '30</div></div>
   </div>
 
   <div id="treeWrap">
@@ -290,16 +293,16 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
 
 <script>
 const DATA=[
-  {founder:"Anik Saluja",gen1:["Chris Gonzalez","Christina Cavin","Sammy Judge","Stewie McMillan","Victoria Cicchino"],gen2:["Chris Anderson","Krithik Rajasegar","Owen Higinbotham"],gen3:["Abha Dahal","Daniel Outkou","Gregory Yaghdjian","Josefa Pica","Randelle Agravante"],gen4:["Kyle Smith","Piper Shields","Weizi Song"]},
-  {founder:"Hussain Babar",gen1:["Lucas Koranda","Marc Blekhman","Matt Silver","Owen English","Ruhi Tawde"],gen2:["Anna Seftenberg","Eli Robbins","Evan Mangifesta","Evan Ravalli","Roisin Gaffney","Vincent Jordan","Zachary Smith"],gen3:["Ben Coley","Karthik Sekhar","Nolan Keating","Sophie Lee","Tyler Fitts"],gen4:["Anshul Deval","Jack Johnsen","Keenan Roderick","Noah Moshe"]},
-  {founder:"Jeffrey Davenport",gen1:["Aashir Khan","Akanksha Gavade","Andrei Empedrad","Erica Scotto Di Santolo","Leeva Slevin","Matthew Martinez"],gen2:["Edward Antczak","Juliana Diaz","Manya Sur","Meg Enquist","Zaki Khan"],gen3:["David Kyle","Gianna Grillo"],gen4:["Amy Chowdhury","Catherine Chen","Evan Bauer","Luca Netter","Michael Levy","Nicole Ng","Steven Wang","Yanet Girma"]},
+  {founder:"Anik Saluja",gen1:["Chris Gonzalez","Christina Cavin","Sammy Judge","Stewie McMillan","Victoria Cicchino"],gen2:["Chris Anderson","Krithik Rajasegar","Owen Higinbotham"],gen3:["Abha Dahal","Daniel Outkou","Gregory Yaghdjian","Josefa Pica","Randelle Agravante"],gen4:["Kyle Smith","Piper Shields","Weizi Song"],gen5:["Joshua Katz","Yirui Wang"]},
+  {founder:"Hussain Babar",gen1:["Lucas Koranda","Marc Blekhman","Matt Silver","Owen English","Ruhi Tawde"],gen2:["Anna Seftenberg","Eli Robbins","Evan Mangifesta","Evan Ravalli","Roisin Gaffney","Vincent Jordan","Zachary Smith"],gen3:["Ben Coley","Karthik Sekhar","Nolan Keating","Sophie Lee","Tyler Fitts"],gen4:["Anshul Deval","Jack Johnsen","Keenan Roderick","Noah Moshe"],gen5:["Henry Hasty","Natalie Pressler"]},
+  {founder:"Jeffrey Davenport",gen1:["Aashir Khan","Akanksha Gavade","Andrei Empedrad","Erica Scotto Di Santolo","Leeva Slevin","Matthew Martinez"],gen2:["Edward Antczak","Juliana Diaz","Manya Sur","Meg Enquist","Zaki Khan"],gen3:["David Kyle","Gianna Grillo"],gen4:["Amy Chowdhury","Catherine Chen","Evan Bauer","Luca Netter","Michael Levy","Nicole Ng","Steven Wang","Yanet Girma"],gen5:["Ernesto Konidaris","Jacob Rosenstrock","Jetziel Rodríguez","Jonathan Ware","KaylaAnn Kandy"]},
   {founder:"Jordan Lickstein",gen1:["Alice Zhang","Emily Ribarich","Ingrid Weissman","Julia Spinelli","Sophia Lis","Spencer O'Connell"],gen2:["Amayah Wade","David Gallo","Jedd Frydman","Mary Highland","Paula Derengowski"],gen3:["Poshitha Reddy Upparapalli"],gen4:["Dhaashirah Coates","Nia Mathew","Suri Mon"]},
-  {founder:"Muzammil Jawed",gen1:["Enzo Valadares","Sabato Corbisiero","Sofia Smith"],gen2:["Annika Flink","Dylan Alini","Grace Mawicke","John Manning","Kara Grossman","Nathan Balderas","Samuel Wertheim","Zaid Salaria"],gen3:["Azar Afellah","Christopher Chau","Grace Raney","Poshitha Upparapalli","Shirina Rong"],gen4:["Ario Merrill","Charles DeLange","Demetri Condolios","Grace Kirby","Jack Webb","Jonathan Wiggins","Josh Binder","Larah Flavier","Lucas Scourtos","Mia Chen","Natalie Percello","Simone Alexander","Sophia Disla","William Cavalier"]}
+  {founder:"Muzammil Jawed",gen1:["Enzo Valadares","Sabato Corbisiero","Sofia Smith"],gen2:["Annika Flink","Dylan Alini","Grace Mawicke","John Manning","Kara Grossman","Nathan Balderas","Samuel Wertheim","Zaid Salaria"],gen3:["Azar Afellah","Christopher Chau","Grace Raney","Poshitha Upparapalli","Shirina Rong"],gen4:["Ario Merrill","Charles DeLange","Demetri Condolios","Grace Kirby","Jack Webb","Jonathan Wiggins","Josh Binder","Larah Flavier","Lucas Scourtos","Mia Chen","Natalie Percello","Simone Alexander","Sophia Disla","William Cavalier"],gen5:["Basma Belmejdoub","Caden Han","Dylan Lu","Ella Jordre","Emily King","Evan Saptari","Helen Yilmaz","Hudson Schaefer","Kavya Sagunarthy","Madeline Scheidt","Mira Johnson","Sanaya Joshi","Shrey Sharma","Sydney Kramer","Tate Poff"]}
 ];
 
-const GC=["#0D1F3C","#1B3A6B","#2B5499","#3A6EBF"];
-const GL=["gen 1 '26","gen 2 '27","gen 3 '28","gen 4 '29"];
-const GK=["gen1","gen2","gen3","gen4"];
+const GC=["#0D1F3C","#1B3A6B","#2B5499","#3A6EBF","#6B9ACC"];
+const GL=["gen 1 '26","gen 2 '27","gen 3 '28","gen 4 '29","gen 5 '30"];
+const GK=["gen1","gen2","gen3","gen4","gen5"];
 let activeGen="all", searchVal="";
 
 function ini(n){return n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();}
@@ -308,7 +311,7 @@ function ini(n){return n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase
 const phrases = [
   "scholars of finance.",
   "to inspire character and integrity in the finance leaders of tomorrow.",
-  "five founders. four generations.",
+  "five founders. five generations.",
   "scholars of finance — family tree."
 ];
 
@@ -540,10 +543,10 @@ document.getElementById("replayBtn").addEventListener("click", () => {
 
 // ── STATS ──
 function calcStats() {
-  let g=[0,0,0,0];
+  let g=[0,0,0,0,0];
   DATA.forEach(f => GK.forEach((k,i) => g[i]+=(f[k]||[]).length));
   document.getElementById("s-total").textContent = g.reduce((a,b)=>a+b,0);
-  ["s-g1","s-g2","s-g3","s-g4"].forEach((id,i) => document.getElementById(id).textContent = g[i]);
+  ["s-g1","s-g2","s-g3","s-g4","s-g5"].forEach((id,i) => document.getElementById(id).textContent = g[i]);
 }
 
 // scroll redraws lines
