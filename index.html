@@ -114,7 +114,9 @@ nav {
 .stat-l { font-size: 0.68rem; color: var(--muted); margin-top: 1px; letter-spacing: 0.06em; text-transform: lowercase; }
 
 /* ─── TREE ─── */
+.content { display: flex; align-items: flex-start; }
 #treeWrap {
+  flex: 1; min-width: 0;
   overflow: auto; padding: 52px 48px 100px;
   cursor: default;
 }
@@ -201,6 +203,40 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
 .tl3 { stroke: var(--navy4); opacity: 0.13; }
 .tl4 { stroke: var(--navy5); opacity: 0.13; }
 
+/* ─── ALBUM ─── */
+#album {
+  flex-shrink: 0; width: 420px;
+  position: sticky; top: 74px;
+  height: calc(100vh - 74px);
+  padding: 52px 48px 0 0;
+  display: flex; gap: 10px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 70px, #000 calc(100% - 70px), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, #000 70px, #000 calc(100% - 70px), transparent 100%);
+}
+.album-col { flex: 1; min-width: 0; }
+.album-track {
+  display: flex; flex-direction: column; gap: 10px;
+  animation: albumUp 60s linear infinite;
+}
+.album-col:nth-child(2) .album-track { animation-name: albumDown; animation-duration: 75s; }
+#album:hover .album-track { animation-play-state: paused; }
+@keyframes albumUp { from { transform: translateY(0); } to { transform: translateY(calc(-50% - 5px)); } }
+@keyframes albumDown { from { transform: translateY(calc(-50% - 5px)); } to { transform: translateY(0); } }
+.album-photo {
+  width: 100%; display: block; border-radius: 2px;
+  object-fit: cover; background: #f3f5f9;
+  filter: grayscale(0.15);
+  transition: filter 0.3s ease;
+}
+.album-photo:hover { filter: none; }
+.album-ph {
+  display: flex; align-items: flex-end; padding: 10px;
+  font-family: 'DM Mono', monospace; font-size: 0.58rem;
+  letter-spacing: 0.1em; color: var(--navy5);
+}
+@media (max-width: 1100px) { #album { display: none; } }
+
 /* ─── MODAL ─── */
 .mo { position:fixed;inset:0;background:rgba(255,255,255,0.88);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:20px; }
 .mo.open { display:flex; }
@@ -269,11 +305,14 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
     <div class="stat"><div class="stat-n" id="s-g5">0</div><div class="stat-l">gen 5 '30</div></div>
   </div>
 
-  <div id="treeWrap">
-    <div id="treeInner">
-      <svg id="lsvg"></svg>
-      <div id="treeRows"></div>
+  <div class="content">
+    <div id="treeWrap">
+      <div id="treeInner">
+        <svg id="lsvg"></svg>
+        <div id="treeRows"></div>
+      </div>
     </div>
+    <aside id="album" aria-label="photo album"></aside>
   </div>
   <div class="no-res" id="noRes">no scholars found.</div>
 </div>
@@ -311,7 +350,7 @@ function ini(n){return n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase
 const phrases = [
   "scholars of finance.",
   "to inspire character and integrity in the finance leaders of tomorrow.",
-  "five founders. five generations.",
+  "five generations.",
   "scholars of finance — family tree."
 ];
 
@@ -549,6 +588,53 @@ function calcStats() {
   ["s-g1","s-g2","s-g3","s-g4","s-g5"].forEach((id,i) => document.getElementById(id).textContent = g[i]);
 }
 
+// ── PHOTO ALBUM ──
+// drop images into a "photos" folder and list them here, e.g. "photos/induction-2026.jpg"
+const PHOTOS = [
+  "photos/sof-01.jpg",
+  "photos/sof-02.jpg",
+  "photos/sof-03.jpg",
+  "photos/sof-04.jpg",
+  "photos/sof-05.jpg",
+  "photos/sof-06.jpg",
+  "photos/sof-07.jpg",
+  "photos/sof-08.jpg",
+  "photos/sof-09.jpg",
+  "photos/sof-10.jpg",
+  "photos/sof-11.jpg"
+];
+
+function buildAlbum() {
+  const album = document.getElementById("album");
+  const ratios = [1.25, 0.8, 1, 1.4, 0.75, 1.1];
+  let items = PHOTOS.length ? PHOTOS.slice() : ratios.map(() => null);
+  while (items.length < 8) items = items.concat(items);
+  const cols = [[], []];
+  items.forEach((src, i) => cols[i % 2].push({ src, r: ratios[i % ratios.length] }));
+  cols.forEach(list => {
+    const col = document.createElement("div");
+    col.className = "album-col";
+    const track = document.createElement("div");
+    track.className = "album-track";
+    // list twice so the loop is seamless
+    list.concat(list).forEach(({ src, r }) => {
+      let el;
+      if (src) {
+        el = document.createElement("img");
+        el.src = src; el.alt = ""; el.loading = "lazy";
+      } else {
+        el = document.createElement("div");
+        el.classList.add("album-ph"); el.textContent = "photo";
+        el.style.aspectRatio = `1 / ${r}`;
+      }
+      el.classList.add("album-photo");
+      track.appendChild(el);
+    });
+    col.appendChild(track);
+    album.appendChild(col);
+  });
+}
+
 // scroll redraws lines
 const tw = document.getElementById("treeWrap");
 tw.addEventListener("scroll", () => requestAnimationFrame(() => drawLines(false)));
@@ -557,6 +643,7 @@ window.addEventListener("resize", () => requestAnimationFrame(() => drawLines(fa
 // ── LAUNCH ──
 calcStats();
 buildTree();
+buildAlbum();
 typeSequence(() => {
   document.getElementById("intro").classList.add("fade");
   setTimeout(() => {
