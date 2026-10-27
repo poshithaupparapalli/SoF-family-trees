@@ -20,39 +20,6 @@
 }
 html, body { height: 100%; background: var(--white); color: var(--ink); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
 
-/* ─── INTRO ─── */
-#intro {
-  position: fixed; inset: 0; background: var(--white);
-  z-index: 999; display: flex; align-items: center; justify-content: center;
-  transition: opacity 1s ease;
-}
-#intro.fade { opacity: 0; pointer-events: none; }
-
-.intro-inner { text-align: center; }
-
-.typed-line {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.95rem;
-  font-weight: 300;
-  color: var(--ink);
-  letter-spacing: 0.01em;
-  min-height: 1.4em;
-  display: flex; align-items: center; justify-content: center;
-}
-.cursor {
-  display: inline-block;
-  width: 1px; height: 1em;
-  background: var(--ink);
-  margin-left: 2px;
-  animation: blink 0.8s step-end infinite;
-  vertical-align: middle;
-}
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-
-/* ─── MAIN ─── */
-#main { opacity: 0; transition: opacity 0.8s ease; }
-#main.show { opacity: 1; }
-
 /* ─── NAV ─── */
 nav {
   display: flex; align-items: center; justify-content: space-between;
@@ -266,15 +233,6 @@ svg#lsvg { position: absolute; top:0; left:0; width:100%; height:100%; pointer-e
 </head>
 <body>
 
-<!-- ── INTRO ── -->
-<div id="intro">
-  <div class="intro-inner">
-    <div class="typed-line">
-      <span id="typedText"></span><span class="cursor" id="cur"></span>
-    </div>
-  </div>
-</div>
-
 <!-- ── MAIN ── -->
 <div id="main">
   <nav>
@@ -335,7 +293,7 @@ const DATA=[
   {founder:"Anik Saluja",gen1:["Chris Gonzalez","Christina Cavin","Sammy Judge","Stewie McMillan","Victoria Cicchino"],gen2:["Chris Anderson","Krithik Rajasegar","Owen Higinbotham"],gen3:["Abha Dahal","Daniel Outkou","Gregory Yaghdjian","Josefa Pica","Randelle Agravante"],gen4:["Kyle Smith","Piper Shields","Weizi Song"],gen5:["Joshua Katz","Yirui Wang"]},
   {founder:"Hussain Babar",gen1:["Lucas Koranda","Marc Blekhman","Matt Silver","Owen English","Ruhi Tawde"],gen2:["Anna Seftenberg","Eli Robbins","Evan Mangifesta","Evan Ravalli","Roisin Gaffney","Vincent Jordan","Zachary Smith"],gen3:["Ben Coley","Karthik Sekhar","Nolan Keating","Sophie Lee","Tyler Fitts"],gen4:["Anshul Deval","Jack Johnsen","Keenan Roderick","Noah Moshe"],gen5:["Henry Hasty","Natalie Pressler"]},
   {founder:"Jeffrey Davenport",gen1:["Aashir Khan","Akanksha Gavade","Andrei Empedrad","Erica Scotto Di Santolo","Leeva Slevin","Matthew Martinez"],gen2:["Edward Antczak","Juliana Diaz","Manya Sur","Meg Enquist","Zaki Khan"],gen3:["David Kyle","Gianna Grillo"],gen4:["Amy Chowdhury","Catherine Chen","Evan Bauer","Luca Netter","Michael Levy","Nicole Ng","Steven Wang","Yanet Girma"],gen5:["Ernesto Konidaris","Jacob Rosenstrock","Jetziel Rodríguez","Jonathan Ware","KaylaAnn Kandy"]},
-  {founder:"Jordan Lickstein",gen1:["Alice Zhang","Emily Ribarich","Ingrid Weissman","Julia Spinelli","Sophia Lis","Spencer O'Connell"],gen2:["Alex Grigoriades","Amayah Wade","David Gallo","Jedd Frydman","Mary Highland","Paula Derengowski"],gen3:["Poshitha Reddy Upparapalli"],gen4:["Dhaashirah Coates","Nia Mathew","Suri Mon"]},
+  {founder:"Jordan Lickstein",gen1:["Alice Zhang","Emily Ribarich","Ingrid Weissman","Julia Spinelli","Sophia Lis","Spencer O'Connell"],gen2:["Alex Grigoriades","Amayah Wade","David Gallo","Jedd Frydman","Mary Highland","Paula Derengowski"],gen4:["Dhaashirah Coates","Nia Mathew","Suri Mon"]},
   {founder:"Muzammil Jawed",gen1:["Enzo Valadares","Sabato Corbisiero","Sofia Smith"],gen2:["Annika Flink","Dylan Alini","Grace Mawicke","John Manning","Kara Grossman","Nathan Balderas","Samuel Wertheim","Zaid Salaria"],gen3:["Azar Afellah","Christopher Chau","Grace Raney","Poshitha Upparapalli","Shirina Rong"],gen4:["Ario Merrill","Charles DeLange","Demetri Condolios","Grace Kirby","Jack Webb","Jonathan Wiggins","Josh Binder","Larah Flavier","Lucas Scourtos","Mia Chen","Natalie Percello","Simone Alexander","Sophia Disla","William Cavalier"],gen5:["Basma Belmejdoub","Caden Han","Dylan Lu","Ella Jordre","Emily King","Evan Saptari","Helen Yilmaz","Hudson Schaefer","Kavya Sagunarthy","Madeline Scheidt","Mira Johnson","Sanaya Joshi","Shrey Sharma","Sydney Kramer","Tate Poff"]}
 ];
 
@@ -345,56 +303,6 @@ const GK=["gen1","gen2","gen3","gen4","gen5"];
 let activeGen="all", searchVal="";
 
 function ini(n){return n.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase();}
-
-// ── TYPING INTRO ──
-const phrases = [
-  "sof family tree.",
-  "to inspire character and integrity in the finance leaders of tomorrow.",
-  "five generations."
-];
-
-function typeSequence(callback) {
-  const el = document.getElementById("typedText");
-  const cur = document.getElementById("cur");
-  let pi = 0;
-
-  function typePhrase(phrase, done) {
-    let i = 0;
-    el.textContent = "";
-    function typeChar() {
-      if (i < phrase.length) {
-        el.textContent += phrase[i++];
-        setTimeout(typeChar, 42);
-      } else {
-        setTimeout(done, pi < phrases.length - 1 ? 700 : 400);
-      }
-    }
-    typeChar();
-  }
-
-  function erasePhrase(done) {
-    let text = el.textContent;
-    function eraseChar() {
-      if (text.length > 0) {
-        text = text.slice(0, -1);
-        el.textContent = text;
-        setTimeout(eraseChar, 22);
-      } else { done(); }
-    }
-    eraseChar();
-  }
-
-  function next() {
-    if (pi < phrases.length) {
-      typePhrase(phrases[pi], () => {
-        pi++;
-        if (pi < phrases.length) erasePhrase(next);
-        else { setTimeout(() => { cur.style.display="none"; callback(); }, 600); }
-      });
-    }
-  }
-  next();
-}
 
 // ── BUILD DOM ──
 function buildTree() {
@@ -660,14 +568,15 @@ window.addEventListener("resize", () => requestAnimationFrame(() => drawLines(fa
 calcStats();
 buildTree();
 buildAlbum();
-typeSequence(() => {
-  document.getElementById("intro").classList.add("fade");
-  setTimeout(() => {
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("main").classList.add("show");
-    animateTree();
-  }, 900);
-});
+// play the tree animation once it scrolls into view (works inside a Wix embed too)
+if ("IntersectionObserver" in window) {
+  const io = new IntersectionObserver(entries => {
+    if (entries.some(e => e.isIntersecting)) { io.disconnect(); animateTree(); }
+  }, { threshold: 0.15 });
+  io.observe(document.getElementById("treeWrap"));
+} else {
+  animateTree();
+}
 </script>
 </body>
 </html>
